@@ -61,6 +61,19 @@ class App extends React.Component {
             onChange={(r, g, b) =>
               this.setState({ color_picker: { r: r, g: g, b: b } })
             }
+            onFill={(r, g, b) => {
+              this.setState({
+                grid: {
+                  colors: Array(this.state.settings.size.rows).fill(
+                    Array(this.state.settings.size.cols).fill({
+                      r: r,
+                      g: g,
+                      b: b,
+                    })
+                  ),
+                },
+              });
+            }}
           />
         </span>
       </div>

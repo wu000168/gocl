@@ -8,11 +8,14 @@ import {
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
+  IconButton,
 } from "@material-ui/core";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 import { fade } from "@material-ui/core/styles/colorManipulator";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import FormatColorFillIcon from "@material-ui/icons/FormatColorFill";
+import ColorLensIcon from "@material-ui/icons/ColorLens";
 
 class ColorPicker extends React.Component {
   constructor(props) {
@@ -116,88 +119,113 @@ class ColorPicker extends React.Component {
 
   render() {
     return (
-
-        <ExpansionPanel>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <ThemeProvider
-              theme={createMuiTheme({
-                overrides: {
-                  MuiAvatar: {
-                    colorDefault: {
-                      backgroundColor:
-                        "rgb(" +
-                        this.state.r +
-                        "," +
-                        this.state.g +
-                        "," +
-                        this.state.b +
-                        ")",
-                    },
+      <ExpansionPanel
+        square
+        style={{ boxShadow: "none", border: "1px solid rgba(0, 0, 0, .125)" }}
+      >
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <ThemeProvider
+            theme={createMuiTheme({
+              overrides: {
+                MuiAvatar: {
+                  colorDefault: {
+                    color:
+                      this.state.r + this.state.g + this.state.b <= 128 * 3
+                        ? "#EEEEEED0"
+                        : "#505050D0",
+                    backgroundColor:
+                      "rgb(" +
+                      this.state.r +
+                      "," +
+                      this.state.g +
+                      "," +
+                      this.state.b +
+                      ")",
                   },
                 },
-              })}
+                MuiIconButton: {
+                  root: {
+                    color:
+                      this.state.r + this.state.g + this.state.b <= 128 * 3
+                        ? "#EEEEEED0"
+                        : "#505050D0",
+                  },
+                },
+              },
+            })}
+          >
+            <Grid
+              container
+              spacing={2}
+              justify="flex-start"
+              alignItems="center"
             >
-              <Grid
-                container
-                spacing={2}
-                justify="flex-start"
-                alignItems="center"
-              >
-                <Grid item>
-                  <Avatar
-                    style={{
-                      margin: "4pt",
+              <Grid item>
+                <Avatar
+                  style={{
+                    margin: "4pt",
+                  }}
+                >
+                  <IconButton
+                    onClick={(e) => {
+                      this.props.onFill(
+                        this.state.r,
+                        this.state.g,
+                        this.state.b
+                      );
+                      e.stopPropagation();
                     }}
                   >
-                    <div />
-                  </Avatar>
-                </Grid>
-                <Grid item>
-                  <Typography style={{ minWidth: "5em" }}>
-                    {this.rgbToHex(this.state.r, this.state.g, this.state.b)}
-                  </Typography>
-                </Grid>
+                    <FormatColorFillIcon />
+                  </IconButton>
+                </Avatar>
               </Grid>
-            </ThemeProvider>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <div style={{ width: "100%", margin: "0pt 4pt 4pt 4pt" }}>
-              <div>
-                {this.makeSlider(
-                  "Red",
-                  this.state.r,
-                  "rgb(" + this.state.r + ",0,0)",
-                  (n) => {
-                    this.setState({ r: n });
-                    this.props.onChange(n, this.state.g, this.state.b);
-                  }
-                )}
-              </div>
-              <div>
-                {this.makeSlider(
-                  "Green",
-                  this.state.g,
-                  "rgb(0," + this.state.g + ",0)",
-                  (n) => {
-                    this.setState({ g: n });
-                    this.props.onChange(this.state.r, n, this.state.b);
-                  }
-                )}
-              </div>
-              <div>
-                {this.makeSlider(
-                  "Blue",
-                  this.state.b,
-                  "rgb(0,0," + this.state.b + ")",
-                  (n) => {
-                    this.setState({ b: n });
-                    this.props.onChange(this.state.r, this.state.g, n);
-                  }
-                )}
-              </div>
+              <Grid item>
+                <Typography style={{ minWidth: "5em" }}>
+                  {this.rgbToHex(this.state.r, this.state.g, this.state.b)}
+                </Typography>
+              </Grid>
+            </Grid>
+          </ThemeProvider>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <div style={{ width: "100%", margin: "0pt 4pt 4pt 4pt" }}>
+            <div>
+              {this.makeSlider(
+                "Red",
+                this.state.r,
+                "rgb(" + this.state.r + ",0,0)",
+                (n) => {
+                  this.setState({ r: n });
+                  this.props.onChange(n, this.state.g, this.state.b);
+                }
+              )}
             </div>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
+            <div>
+              {this.makeSlider(
+                "Green",
+                this.state.g,
+                "rgb(0," + this.state.g + ",0)",
+                (n) => {
+                  this.setState({ g: n });
+                  this.props.onChange(this.state.r, n, this.state.b);
+                }
+              )}
+            </div>
+            <div>
+              {this.makeSlider(
+                "Blue",
+                this.state.b,
+                "rgb(0,0," + this.state.b + ")",
+                (n) => {
+                  this.setState({ b: n });
+                  this.props.onChange(this.state.r, this.state.g, n);
+                }
+              )}
+            </div>
+          </div>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
     );
   }
 }
