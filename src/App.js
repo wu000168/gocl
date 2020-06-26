@@ -2,8 +2,6 @@ import React from "react";
 import "./App.css";
 import CellGrid from "./CellGrid";
 import ColorPicker from "./ColorPicker";
-// import { createMuiTheme } from "@material-ui/core/styles";
-// import { ThemeProvider } from "@material-ui/styles";
 
 const initRows = 24,
   initCols = 32;
@@ -27,11 +25,12 @@ class App extends React.Component {
           end: { x: initRows, y: initCols },
         },
       },
-      grid: {
-        colors: Array(initRows).fill(
-          Array(initCols).fill({ r: 0, g: 0, b: 0 })
-        ),
-      },
+      grid: Array.from({ length: initRows }, () =>
+        Array.from({ length: initCols }, () => ({
+          color: { r: 255, g: 255, b: 255 },
+          selected: false,
+        }))
+      ),
       rules: [],
     };
   }
@@ -51,6 +50,14 @@ class App extends React.Component {
                   verticalAlign: "middle",
                   flexGrow: 1,
                 }}
+                onClick={(r, c) => {
+                  var newGrid = this.state.grid.map((row) => row.slice());
+                  newGrid[r][c].selected = !newGrid[r][c].selected;
+                  console.log(newGrid);
+                  this.setState({
+                    grid: newGrid,
+                  });
+                }}
               />
             </div>
           </div>
@@ -63,15 +70,23 @@ class App extends React.Component {
             }
             onFill={(r, g, b) => {
               this.setState({
-                grid: {
-                  colors: Array(this.state.settings.size.rows).fill(
-                    Array(this.state.settings.size.cols).fill({
-                      r: r,
-                      g: g,
-                      b: b,
-                    })
-                  ),
-                },
+                grid: this.state.grid.map((row) =>
+                  row.map((cell) => ({
+                    ...cell,
+                    color: { r: r, g: g, b: b },
+                  }))
+                ),
+              });
+            }}
+            onColorize={(r, g, b) => {
+              this.setState({
+                grid: this.state.grid.map((row) =>
+                  row.map((cell) =>
+                    cell.selected
+                      ? { ...cell, color: { r: r, g: g, b: b } }
+                      : cell
+                  )
+                ),
               });
             }}
           />

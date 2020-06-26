@@ -9,13 +9,24 @@ import {
   ExpansionPanelSummary,
   ExpansionPanelDetails,
   IconButton,
+  Badge,
+  Tooltip,
 } from "@material-ui/core";
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createMuiTheme, withStyles } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 import { fade } from "@material-ui/core/styles/colorManipulator";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import FormatColorFillIcon from "@material-ui/icons/FormatColorFill";
-import ColorLensIcon from "@material-ui/icons/ColorLens";
+import FormatColorRoundedIcon from "@material-ui/icons/FormatColorFill";
+import ColorizeRoundedIcon from "@material-ui/icons/ColorizeRounded";
+
+const SmallAvatar = withStyles((theme) => ({
+  root: {
+    width: "16pt",
+    height: "16pt",
+    border: `2pt solid #A0A0A0A0`,
+    backgroundColor: theme.palette.background.paper,
+  },
+}))(Avatar);
 
 class ColorPicker extends React.Component {
   constructor(props) {
@@ -146,7 +157,9 @@ class ColorPicker extends React.Component {
                 MuiIconButton: {
                   root: {
                     color:
-                      this.state.r + this.state.g + this.state.b <= 128 * 3
+                      (3 * this.state.r + 4 * this.state.g + this.state.b) >>
+                        3 <=
+                      128
                         ? "#EEEEEED0"
                         : "#505050D0",
                   },
@@ -161,24 +174,64 @@ class ColorPicker extends React.Component {
               alignItems="center"
             >
               <Grid item>
-                <Avatar
-                  style={{
-                    margin: "4pt",
+                <Badge
+                  overlap="circle"
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
                   }}
+                  // color="primary"
+                  badgeContent={
+                    <ThemeProvider
+                      theme={createMuiTheme({
+                        overrides: {
+                          MuiIconButton: {
+                            root: { color: "#202020D0" },
+                          },
+                        },
+                      })}
+                    >
+                      <Tooltip arrow title="Color Selected Cells">
+                        <SmallAvatar>
+                          <IconButton
+                            size="small"
+                            onClick={(e) => {
+                              this.props.onColorize(
+                                this.state.r,
+                                this.state.g,
+                                this.state.b
+                              );
+                              e.stopPropagation();
+                            }}
+                          >
+                            <ColorizeRoundedIcon fontSize="small" />
+                          </IconButton>
+                        </SmallAvatar>
+                      </Tooltip>
+                    </ThemeProvider>
+                  }
                 >
-                  <IconButton
-                    onClick={(e) => {
-                      this.props.onFill(
-                        this.state.r,
-                        this.state.g,
-                        this.state.b
-                      );
-                      e.stopPropagation();
-                    }}
-                  >
-                    <FormatColorFillIcon />
-                  </IconButton>
-                </Avatar>
+                  <Tooltip arrow title="Fill Grid">
+                    <Avatar
+                      style={{
+                        margin: "4pt",
+                      }}
+                    >
+                      <IconButton
+                        onClick={(e) => {
+                          this.props.onFill(
+                            this.state.r,
+                            this.state.g,
+                            this.state.b
+                          );
+                          e.stopPropagation();
+                        }}
+                      >
+                        <FormatColorRoundedIcon />
+                      </IconButton>
+                    </Avatar>
+                  </Tooltip>
+                </Badge>
               </Grid>
               <Grid item>
                 <Typography style={{ minWidth: "5em" }}>
