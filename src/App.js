@@ -1,7 +1,9 @@
 import React from "react";
 import "./App.css";
+import { AppBar, Toolbar, IconButton, Card, Divider } from "@material-ui/core";
 import CellGrid from "./CellGrid";
 import ColorPicker from "./ColorPicker";
+import SizePicker from "./SizePicker";
 
 const initRows = 24,
   initCols = 32;
@@ -10,20 +12,14 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      settings: {
-        size: {
-          rows: initRows,
-          cols: initCols,
-        },
-        color_picker: {
-          r: 0,
-          g: 0,
-          b: 0,
-        },
-        fill_range: {
-          start: { x: 0, y: 0 },
-          end: { x: initRows, y: initCols },
-        },
+      size: {
+        rows: initRows,
+        cols: initCols,
+      },
+      color_picker: {
+        r: 255,
+        g: 255,
+        b: 255,
       },
       grid: Array.from({ length: initRows }, () =>
         Array.from({ length: initCols }, () => ({
@@ -34,12 +30,66 @@ class App extends React.Component {
       rules: [],
     };
   }
+
+  sizeChangeHandler(r, c) {
+    console.log(this.state);
+
+    var newGrid = this.state.grid;
+    if (r < this.state.size.rows) {
+      newGrid = newGrid.slice(0, r);
+    } else if (r > this.state.size.rows) {
+      newGrid = [
+        ...newGrid,
+        ...Array.from({ length: r - this.state.size.rows }, () =>
+          Array.from({ length: c }, () => ({
+            color: {
+              r: this.state.color_picker.r,
+              g: this.state.color_picker.g,
+              b: this.state.color_picker.b,
+            },
+            selected: false,
+          }))
+        ),
+      ];
+    }
+
+    if (c < this.state.size.cols) {
+      newGrid = newGrid.map((row) => row.slice(0, c));
+    } else if (c > this.state.size.cols) {
+      newGrid = newGrid.map((row) => [
+        ...row,
+        ...Array.from({ length: c - this.state.size.cols }, () => ({
+          color: {
+            r: this.state.color_picker.r,
+            g: this.state.color_picker.g,
+            b: this.state.color_picker.b,
+          },
+          selected: false,
+        })),
+      ]);
+    }
+
+    this.setState({
+      size: { rows: r, cols: c },
+      grid: newGrid,
+    });
+  }
+
   render() {
     return (
       <div style={{ height: "100vh", display: "flex", flexFlow: "row" }}>
         <span style={{ height: "100vh", flex: "8 8 auto" }}>
           <div style={{ display: "flex", flexFlow: "column", height: "100%" }}>
-            <div style={{ flex: "0 1 auto" }}></div>
+            <div style={{ flex: "0 1 auto" }}>
+              <AppBar position="sticky" color="transparent" elevation={2}>
+                <Toolbar>
+                  <SizePicker
+                    size={this.state.size}
+                    onApply={(r, c) => this.sizeChangeHandler(r, c)}
+                  />
+                </Toolbar>
+              </AppBar>
+            </div>
             <div style={{ flex: "1 1 auto" }}>
               <CellGrid
                 grid={this.state.grid}
@@ -63,33 +113,43 @@ class App extends React.Component {
           </div>
         </span>
         <span style={{ flex: "2 2 auto" }}>
-          <ColorPicker
-            color={this.state.settings.color_picker}
-            onChange={(r, g, b) =>
-              this.setState({ color_picker: { r: r, g: g, b: b } })
-            }
-            onFill={(r, g, b) => {
-              this.setState({
-                grid: this.state.grid.map((row) =>
-                  row.map((cell) => ({
-                    ...cell,
-                    color: { r: r, g: g, b: b },
-                  }))
-                ),
-              });
+          <Card
+            style={{
+              width: "100%",
+              height: "100%",
+              margin: "auto",
             }}
-            onColorize={(r, g, b) => {
-              this.setState({
-                grid: this.state.grid.map((row) =>
-                  row.map((cell) =>
-                    cell.selected
-                      ? { ...cell, color: { r: r, g: g, b: b } }
-                      : cell
-                  )
-                ),
-              });
-            }}
-          />
+            elevation={4}
+          >
+            <ColorPicker
+              color={this.state.color_picker}
+              onChange={(r, g, b) =>
+                this.setState({ color_picker: { r: r, g: g, b: b } })
+              }
+              onFill={(r, g, b) => {
+                this.setState({
+                  grid: this.state.grid.map((row) =>
+                    row.map((cell) => ({
+                      ...cell,
+                      color: { r: r, g: g, b: b },
+                    }))
+                  ),
+                });
+              }}
+              onColorize={(r, g, b) => {
+                this.setState({
+                  grid: this.state.grid.map((row) =>
+                    row.map((cell) =>
+                      cell.selected
+                        ? { ...cell, color: { r: r, g: g, b: b } }
+                        : cell
+                    )
+                  ),
+                });
+              }}
+            />
+            <Divider style={{ width: "96%", margin: "auto" }} />
+          </Card>
         </span>
       </div>
     );

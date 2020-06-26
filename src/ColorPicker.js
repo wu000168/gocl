@@ -132,7 +132,7 @@ class ColorPicker extends React.Component {
     return (
       <ExpansionPanel
         square
-        style={{ boxShadow: "none", border: "1px solid rgba(0, 0, 0, .125)" }}
+        style={{ boxShadow: "none", border: "none" }}
       >
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <ThemeProvider
