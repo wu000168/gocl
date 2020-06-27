@@ -1,9 +1,17 @@
 import React from "react";
 import "./App.css";
-import { AppBar, Toolbar, Card, Divider } from "@material-ui/core";
+import {
+  AppBar,
+  Toolbar,
+  Card,
+  Divider,
+  IconButton,
+  Tooltip,
+} from "@material-ui/core";
 import CellGrid from "./CellGrid";
 import ColorPicker from "./ColorPicker";
 import SizePicker from "./SizePicker";
+import LayersClearRoundedIcon from "@material-ui/icons/LayersClear";
 
 const initRows = 24,
   initCols = 32;
@@ -81,12 +89,37 @@ class App extends React.Component {
         <span style={{ height: "100vh", flex: "8 8 auto" }}>
           <div style={{ display: "flex", flexFlow: "column", height: "100%" }}>
             <div style={{ flex: "0 1 auto" }}>
-              <AppBar position="sticky" color="transparent" elevation={2}>
+              <AppBar position="sticky" color="transparent" elevation={1}>
                 <Toolbar>
                   <SizePicker
                     size={this.state.size}
                     onApply={(r, c) => this.sizeChangeHandler(r, c)}
                   />
+                  <span style={{ flex: "1 1 auto" }} />
+                  <Tooltip arrow title="Clear Selection">
+                    <IconButton
+                      disabled={
+                        !this.state.grid.reduce(
+                          (acc, row) =>
+                            acc ||
+                            row.reduce(
+                              (acc, cell) => acc || cell.selected,
+                              false
+                            ),
+                          false
+                        )
+                      }
+                      onClick={() =>
+                        this.setState({
+                          grid: this.state.grid.map((row) =>
+                            row.map((cell) => ({ ...cell, selected: false }))
+                          ),
+                        })
+                      }
+                    >
+                      <LayersClearRoundedIcon />
+                    </IconButton>
+                  </Tooltip>
                 </Toolbar>
               </AppBar>
             </div>

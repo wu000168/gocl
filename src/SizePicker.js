@@ -31,6 +31,7 @@ class SizePicker extends React.Component {
             min: 1,
             max: 128,
             type: "number",
+            label: "Rows",
           }}
         />
         <CloseIcon style={{ margin: "2pt 2pt 2pt 2pt" }} />
@@ -51,6 +52,7 @@ class SizePicker extends React.Component {
             min: 1,
             max: 128,
             type: "number",
+            label: "Columns",
           }}
         />
         <Button
