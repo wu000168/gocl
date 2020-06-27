@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { AppBar, Toolbar, IconButton, Card, Divider } from "@material-ui/core";
+import { AppBar, Toolbar, Card, Divider } from "@material-ui/core";
 import CellGrid from "./CellGrid";
 import ColorPicker from "./ColorPicker";
 import SizePicker from "./SizePicker";

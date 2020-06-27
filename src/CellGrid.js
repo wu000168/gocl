@@ -1,6 +1,6 @@
 import React from "react";
-import { Card, Box } from "@material-ui/core";
-import CheckRoundedIcon from "@material-ui/icons/CheckRounded";
+import { Card } from "@material-ui/core";
+// import CheckRoundedIcon from "@material-ui/icons/CheckRounded";
 
 class CellGrid extends React.Component {
   render() {

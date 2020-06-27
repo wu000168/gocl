@@ -1,5 +1,5 @@
 import React from "react";
-import { OutlinedInput, Box, Button, Typography } from "@material-ui/core";
+import { OutlinedInput, Box, Button } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
 class SizePicker extends React.Component {
